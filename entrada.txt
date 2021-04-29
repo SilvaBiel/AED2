@@ -1,0 +1,6 @@
+5
+move 3 onto 0
+move 1 onto 2
+pile 2 over 3
+pile 3 over 0
+quit
