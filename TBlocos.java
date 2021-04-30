@@ -32,7 +32,7 @@ public class TBlocos
         MÉTODO PARA REALOCAR OS BLOCOS
       ___________________________________*/
 
-    private void blocosParaRealocar(int posicaoDosBlocos)
+    private void blocosParaRealocar(int posicaoDosBlocos, int blocoReferencia)
     {
         do
         {
@@ -40,19 +40,38 @@ public class TBlocos
             this.vetorListaEncadeada[posicaoDosBlocos].remover();
             this.vetorListaEncadeada[ultimaNo.getElemento().getCodigoDoBloco()].adicionaNodes(ultimaNo);
         }
-        while (this.vetorListaEncadeada[posicaoDosBlocos].getTotalElementos() > 1);
+        while (this.vetorListaEncadeada[posicaoDosBlocos].getPosicaoElementoLista(blocoReferencia)!=this.vetorListaEncadeada[posicaoDosBlocos].getTotalElementos());
     }
+
+        /*________________________________
+        PEGA A POSIÇÃO DE UM BLOCO DA LSE
+      ____________________________________*/
+
+      private int getPosicaoBloco(int bloco)
+      {
+          int posicaoDoBloco = bloco;
+          for (int i=0;i<this.vetorListaEncadeada.length;i++)
+          {
+              if ((vetorListaEncadeada[i].ChecarElemento(bloco) == true) && (posicaoDoBloco != i))
+              {
+                  posicaoDoBloco = i;
+                  break;
+              }
+          }
+          return posicaoDoBloco;
+      }
 
     /*_____________________________________
         MÉTODO MOVE ON NO MUNDO DOS BLOCOS
       _____________________________________*/
 
-    public void MoveOnTo(int blocoMovido, int posicaoParaMover)
+    public void MoveOnTo(int posicaoMovida, int posicaoParaMover)
     {
-        this.blocosParaRealocar(blocoMovido);
-        this.blocosParaRealocar(posicaoParaMover);
-        Nodes blocoParaMover = this.vetorListaEncadeada[blocoMovido].pegaNodes(1);
-        this.vetorListaEncadeada[blocoMovido].remover();
+        int posicaoBlocoMovido = this.getPosicaoBloco(posicaoMovida);
+        this.blocosParaRealocar(posicaoBlocoMovido, posicaoMovida);
+        this.blocosParaRealocar(posicaoParaMover, posicaoParaMover);
+        Nodes blocoParaMover = this.vetorListaEncadeada[posicaoBlocoMovido].pegaNodes(this.vetorListaEncadeada[posicaoBlocoMovido].getPosicaoElementoLista(posicaoMovida));
+        this.vetorListaEncadeada[posicaoMovida].remover();
         this.vetorListaEncadeada[posicaoParaMover].adicionaNodes(blocoParaMover);
     }
 
@@ -60,11 +79,12 @@ public class TBlocos
         MÉTODO MOVE OVER NO MUNDO DOS BLOCOS
       _______________________________________*/
 
-    public void MoveOver(int blocoMovido, int posicaoParaMover)
+    public void MoveOver(int posicaoMovida, int posicaoParaMover)
     {
-        this.blocosParaRealocar(blocoMovido);
-        Nodes blocoParaMover = this.vetorListaEncadeada[blocoMovido].pegaNodes(1);
-        this.vetorListaEncadeada[blocoMovido].remover();
+        int posicaoBlocoMovido = this.getPosicaoBloco(posicaoMovida);
+        this.blocosParaRealocar(posicaoBlocoMovido, posicaoMovida);
+        Nodes blocoParaMover = this.vetorListaEncadeada[posicaoMovida].pegaNodes(1);
+        this.vetorListaEncadeada[posicaoMovida].remover();
         this.vetorListaEncadeada[posicaoParaMover].adicionaNodes(blocoParaMover);
     }
 
@@ -74,17 +94,10 @@ public class TBlocos
 
     public void PileOnTo(int posicaoMovida, int posicaoParaMover)
     {
-        this.blocosParaRealocar(posicaoParaMover);
-        Nodes[] NosParaMover = new Nodes[this.vetorListaEncadeada[posicaoMovida].getTotalElementos()];
-        for (int i=this.vetorListaEncadeada[posicaoMovida].getTotalElementos();i>0;i--)
-        {
-            NosParaMover[i-1] = this.vetorListaEncadeada[posicaoMovida].pegaNodes(i);
-            this.vetorListaEncadeada[posicaoMovida].remover();
-        }
-        for (int l=0;l<NosParaMover.length;l++)
-        {
-            this.vetorListaEncadeada[posicaoParaMover].adicionaNodes(NosParaMover[l]);
-        }
+        int posicaoPilha = this.getPosicaoBloco(posicaoMovida);
+        this.blocosParaRealocar(posicaoParaMover, posicaoParaMover);
+        Nodes pilhaParaMover = this.vetorListaEncadeada[posicaoPilha].removerConjunto(posicaoMovida);
+        this.vetorListaEncadeada[posicaoParaMover].adicionaConjunto(pilhaParaMover);
     }
 
     /*_______________________________________
@@ -93,16 +106,11 @@ public class TBlocos
 
     public void PileOver(int posicaoMovida, int posicaoParaMover)
     {
-        Nodes[] NosParaMover = new Nodes[this.vetorListaEncadeada[posicaoMovida].getTotalElementos()];
-        for (int i=this.vetorListaEncadeada[posicaoMovida].getTotalElementos();i>0;i--)
-        {
-            NosParaMover[i-1] = this.vetorListaEncadeada[posicaoMovida].pegaNodes(i);
-            this.vetorListaEncadeada[posicaoMovida].remover();
-        }
-        for (int l=0;l<NosParaMover.length;l++)
-        {
-            this.vetorListaEncadeada[posicaoParaMover].adicionaNodes(NosParaMover[l]);
-        }
+        int posicaoPilha = this.getPosicaoBloco(posicaoMovida);
+        Nodes pilhaParaMover = this.vetorListaEncadeada[posicaoPilha].removerConjunto(posicaoMovida);
+        this.vetorListaEncadeada[posicaoParaMover].adicionaConjunto(pilhaParaMover);
+
+
     }
 
     /*_______________________________________________________________________________________

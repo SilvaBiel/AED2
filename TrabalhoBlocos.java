@@ -11,7 +11,7 @@ public class TrabalhoBlocos
 {
     public static void main(String[] args) throws Exception 
     {
-        FileReader fr = new FileReader(System.getProperty("user.dir") + "\\entrada.txt");
+        FileReader fr = new FileReader((System.getProperty("user.dir") + "\\entrada.txt"));
         BufferedReader br = new BufferedReader(fr);
         TBlocos mundoDosBlocos = new TBlocos(Integer.parseInt(br.readLine()));
         String line = br.readLine();
